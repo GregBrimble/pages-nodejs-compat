@@ -1,11 +1,23 @@
-export default {
-	fetch(request) {
-    const { pathname } = new URL(request.url)
-    if (pathname === '/') {
-      const a = 5
-      return new Response(`${a  }` + this.fetch.toString())
-    }
+import staticMod from "./static.js";
+import add from "./add.wasm";
 
-    return new Response((await import(`./${pathname.slice(1)}`)).value)
+export default {
+	async fetch(request, env) {
+		const { pathname } = new URL(request.url);
+
+		if (pathname === "/wasm") {
+			const addModule = await WebAssembly.instantiate(add);
+			return new Response(addModule.exports.add(1, 2).toString());
+		}
+
+		if (pathname === "/static") {
+			return new Response(staticMod);
+		}
+
+		if (pathname !== "/") {
+			return new Response((await import(`./${pathname.slice(1)}`)).default);
+		}
+
+		return env.ASSETS.fetch(request);
 	},
 };

@@ -1,1 +1,1 @@
-export const value = "other";
+export default "test";
