@@ -1,5 +1,7 @@
-import Buffer from 'node:buffer'
+import { Buffer } from "node:buffer";
 
 export const onRequest = () => {
-  return new Response(Buffer.from('Hello World!'))
-}
+	const buf = Buffer.from("hello world", "utf8");
+
+	return new Response(buf.toString("hex"));
+};
